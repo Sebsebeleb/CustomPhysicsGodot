@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8w47ifih528c"]
+
+[ext_resource type="Script" path="res://Scripts/Affector.cs" id="1_nk2my"]
+
+[node name="Affector" type="Node2D"]
+z_index = -1
+position = Vector2(337, 234)
+
+[node name="Behaviour" type="Node2D" parent="."]
+script = ExtResource("1_nk2my")
+radius = 60.36
+intensity = 0.12
+duration = 7.115

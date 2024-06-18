@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://djgt4db4i0hdh"]
+
+[ext_resource type="Script" path="res://Scripts/DebugPanel.cs" id="1_w08bh"]
+
+[node name="DebugPanel" type="PanelContainer"]
+auto_translate_mode = 1
+anchors_preset = -1
+anchor_right = 0.228
+anchor_bottom = 0.344
+offset_right = 0.343994
+offset_bottom = 0.0879974
+script = ExtResource("1_w08bh")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="BodyPrediction" type="CheckBox" parent="Panel"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+offset_right = 263.0
+offset_bottom = 223.0
+focus_mode = 0
+text = "Body prediction"
+
+[connection signal="toggled" from="Panel/BodyPrediction" to="." method="_on_body_prediction_toggled"]

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://vfho2e0smcmc"]
+
+[ext_resource type="Script" path="res://Scripts/FakeRB.cs" id="1_me3ql"]
+[ext_resource type="Texture2D" uid="uid://77juc3p6ugof" path="res://icon.svg" id="2_0bsub"]
+
+[node name="Bullet" type="Node2D"]
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("1_me3ql")
+direction = Vector2(0.2, 0.6)
+speed = 500.0
+widthOrRadius = 32.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D"]
+scale = Vector2(0.309431, 0.309431)
+texture = ExtResource("2_0bsub")
