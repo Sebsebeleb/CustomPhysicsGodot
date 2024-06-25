@@ -16,9 +16,10 @@
 [node name="Physics" type="Node" parent="."]
 script = ExtResource("2_33w15")
 
-[node name="PlayerControls" type="Node" parent="."]
+[node name="PlayerControls" type="Node" parent="." node_paths=PackedStringArray("player")]
 script = ExtResource("2_uimsx")
 gravityWell = ExtResource("5_n866k")
+player = NodePath("../Player")
 
 [node name="LineDrawer" type="Node2D" parent="."]
 script = ExtResource("2_0rncg")
@@ -48,22 +49,6 @@ bounces = -1
 visible = false
 scale = Vector2(0.0937505, 0.0937505)
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="DebugPanel" parent="Control" instance=ExtResource("7_3omap")]
-layout_mode = 0
-offset_left = 828.0
-offset_top = 24.0
-offset_right = 1091.0
-offset_bottom = 247.0
-focus_mode = 1
-
 [node name="Player" type="Node2D" parent="."]
 position = Vector2(261, 406)
 
@@ -79,6 +64,25 @@ texture = ExtResource("9_nnvqy")
 script = ExtResource("10_4g8wj")
 rb = NodePath("../Body")
 movementSpeed = 200.0
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DebugPanel" parent="Control" instance=ExtResource("7_3omap")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 863.0
+offset_top = 24.0
+offset_right = 1091.0
+offset_bottom = 247.0
+focus_mode = 1
 
 [editable path="Bullet"]
 [editable path="Bullet3"]

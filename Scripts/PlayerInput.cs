@@ -5,16 +5,87 @@ namespace CustomPhysics.Scripts;
 public partial class PlayerInput : Node
 {
     [Export] private PackedScene gravityWell;
+    [Export] private Node2D player;
 
     private bool changingTime = false;
     public float targetFlowSpeed = 1f;
 
+    private bool isPlacingAffector = false;
+    private bool isShootPredicting = false;
+    
+    public override void _Ready()
+    {
+        PhysicsEngine.OnConstructPredicitonWorld += OnPrediction;
+    }
+
+    public override void _ExitTree()
+    {
+        PhysicsEngine.OnConstructPredicitonWorld -= OnPrediction;
+    }
+
+    private void OnPrediction()
+    {
+        if (isPlacingAffector)
+        {
+            var mbpos = GetViewport().GetMousePosition();
+            PhysicsEngine.SpawnAffector(new AffectorData()
+            {
+                radius = 60.36f,
+                position = mbpos,
+                intensity = 0.12f,
+                remainingDuration = 7.115f,
+            });
+        }
+
+        if (isShootPredicting)
+        {
+            var mbpos = GetViewport().GetMousePosition();
+            var playerPos = this.player.GlobalPosition;
+            var direction = mbpos - playerPos;
+
+            PhysicsEngine.Spawn(new FakeRBData()
+            {
+                position = playerPos,
+                speed = 800,
+                shapeType = 0,
+                widthOrRadius = 6,
+                height = 0,
+                bounces = -1,
+            });
+        }
+    }
+
     public override void _Input(InputEvent @event)
     {
         bool changedWorld = false;
-        if (@event is InputEventMouseButton mb && @event.IsPressed())
+        if (@event is InputEventMouseButton m && m.ButtonIndex == MouseButton.Right)
         {
-            if (mb.ButtonIndex == MouseButton.Right)
+            if (m.IsPressed())
+            {
+                isPlacingAffector = true;
+            }
+
+            if (m.IsReleased())
+            {
+                isPlacingAffector = false;
+            }
+        }
+        
+        if (@event is InputEventMouseButton mk && mk.ButtonIndex == MouseButton.Left)
+        {
+            if (mk.IsPressed())
+            {
+                isShootPredicting = true;
+            }
+
+            if (mk.IsReleased())
+            {
+                isShootPredicting = false;
+            }
+        }
+        if (@event is InputEventMouseButton mb )
+        {
+            if (mb.ButtonIndex == MouseButton.Right && @event.IsReleased())
             {
                 var mbpos = GetViewport().GetMousePosition();
                 var well = gravityWell.Instantiate<Node2D>();
@@ -22,7 +93,7 @@ public partial class PlayerInput : Node
                 GetTree().Root.AddChild(well);
                 changedWorld = true;
             }
-            if (mb.ButtonIndex == MouseButton.WheelUp || mb.ButtonIndex == MouseButton.WheelDown)
+            if (@event.IsPressed() && (mb.ButtonIndex == MouseButton.WheelUp || mb.ButtonIndex == MouseButton.WheelDown))
             {
                 float delta = 0;
                 if (mb.ButtonIndex == MouseButton.WheelUp)

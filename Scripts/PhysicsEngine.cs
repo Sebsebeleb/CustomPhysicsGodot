@@ -7,6 +7,7 @@ using CustomPhysics.Scripts;
 public partial class PhysicsEngine : Node
 {
 
+	public static event Action OnConstructPredicitonWorld; 
 	private static PhysicsEngine instance;
 	
 	private World realWorld;
@@ -73,6 +74,10 @@ public partial class PhysicsEngine : Node
 	private void PredictFuture()
 	{
 		worldBeingSimulated = realWorld.Copy();
+		
+		// Let other systems spawn things etc.
+		OnConstructPredicitonWorld?.Invoke();
+		
 		for (int i = 0; i < predictionSteps; i++)
 		{
 			ProcessPhysics(timeStep);
