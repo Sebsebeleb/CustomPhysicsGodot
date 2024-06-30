@@ -1,13 +1,18 @@
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CustomPhysics.Scripts;
+using CustomPhysics.EcsEngine;
+using CustomPhysics.Physics;
+using Godot;
+
+namespace CustomPhysics;
 
 public partial class PhysicsEngine : Node
 {
 
-	public static event Action OnConstructPredicitonWorld; 
+	public static event Action OnConstructPredictionWorld;
+	public static event Action<World> OnPhysicsProcess;
+	
 	private static PhysicsEngine instance;
 	
 	private World realWorld;
@@ -38,6 +43,16 @@ public partial class PhysicsEngine : Node
 	public static double GetFrameFraction()
 	{
 		return instance.timeStepCounter / timeStep;
+	}
+
+	/// <summary>
+	/// Temp for debug. Needed function maybe, but im thinking "is real" can be a property on the world class 
+	/// </summary>
+	/// <param name="world"></param>
+	/// <returns></returns>
+	public static bool IsRealWorld(World world)
+	{
+		return world == instance.realWorld;
 	}
 
 	
@@ -76,29 +91,18 @@ public partial class PhysicsEngine : Node
 		worldBeingSimulated = realWorld.Copy();
 		
 		// Let other systems spawn things etc.
-		OnConstructPredicitonWorld?.Invoke();
+		OnConstructPredictionWorld?.Invoke();
 		
 		for (int i = 0; i < predictionSteps; i++)
 		{
 			ProcessPhysics(timeStep);
-			PredictionWorlds[i] = worldBeingSimulated.Copy();
+			worldBeingSimulated = worldBeingSimulated.Copy();
+			PredictionWorlds[i] = worldBeingSimulated;
 		}
 		// Done prediction, reset back to real world
 		worldBeingSimulated = realWorld;
 	}
 
-	public static int SpawnAffector(AffectorData data)
-	{
-		return instance.DoSpawnAffector(data);
-	}
-	
-	private int DoSpawnAffector(AffectorData data)
-	{
-		data.index = worldBeingSimulated.currentIndex++;
-		worldBeingSimulated.Affectors.Add(data);
-
-		return data.index;
-	}
 
 	public static World GetRealWorld()
 	{
@@ -114,6 +118,8 @@ public partial class PhysicsEngine : Node
 	{
 		data.index = worldBeingSimulated.currentIndex++;
 		worldBeingSimulated.FakeRbs.Add(data);
+		worldBeingSimulated.ComponentLookup[data.index] = new List<Component>();
+		worldBeingSimulated.ComponentLookup[data.index].AddRange(data.components);
 
 		return data.index;
 	}
@@ -145,9 +151,9 @@ public partial class PhysicsEngine : Node
 
 
 		HashSet<(FakeRBData, FakeRBData)> handled = new HashSet<(FakeRBData, FakeRBData)>();
-		foreach (var a in allRBs.ToArray())
+		foreach (var a in allRBs.Where(r => r.bodyType != BODY_TYPE.Ephemeral))
 		{
-			foreach (var b in allRBs.ToArray())
+			foreach (var b in allRBs.Where(r => r.bodyType != BODY_TYPE.Ephemeral))
 			{
 				if (a == b)
 				{
@@ -201,61 +207,30 @@ public partial class PhysicsEngine : Node
 			}
 		}
 
-		foreach (FakeRBData rb in allRBs)
-		{
-			if (rb.bodyType != BODY_TYPE.Projectile)
-			{
-				continue;
-			}
-			foreach (AffectorData affector in worldBeingSimulated.Affectors)
-			{
-				if (OverlapCircle(rb.position, affector.position, affector.radius))
-				{
-					var direction = (rb.position - affector.position).Normalized();
-					Vector2 drag = rb.direction + direction * affector.intensity;
-					rb.direction = drag.Normalized();
-				}
 
-			}
-		}
+		OnPhysicsProcess?.Invoke(worldBeingSimulated);
 
-		for (var index = worldBeingSimulated.Affectors.Count - 1; index >= 0; index--)
-		{
-			var affector = worldBeingSimulated.Affectors[index];
-			affector.remainingDuration -= (float)delta;
-			if (affector.remainingDuration <= 0)
-			{
-				worldBeingSimulated.Affectors.RemoveAt(index);
-			}
-		}
+
+		List<int> entriesToDelete = new List<int>();
 	}
 
-	private bool OverlapCircle(Vector2 a, Vector2 center, float radius)
+	public static bool OverlapCircle(Vector2 a, Vector2 center, float radius)
 	{
 		return (a - center).Length() < radius;
 	}
-	private bool DetectCollision(FakeRBData a, FakeRBData b, out float penetrationDepth)
+	public static bool DetectCollision(FakeRBData a, FakeRBData b, out float penetrationDepth)
 	{
 		penetrationDepth = -1;
 		var pointA = a.position;
 		var pointB = b.position;
-		var distance = (pointA - pointB).Length();
 
-		//GD.Print($"Detected collision at: {pointA}({a.widthOrRadius}) from {a.index} against {pointB}({b.widthOrRadius}) from {b.index} with distance: {distance}");
-		
-		var diff = distance - (a.widthOrRadius + b.widthOrRadius);
-		if (diff < 0)
-		{
-			penetrationDepth = diff/-2;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		var widthA = a.widthOrRadius;
+		var widthB = b.widthOrRadius;
+
+		return TPhysics.CircleCircleCollision(pointA, pointB, widthA, widthB, out penetrationDepth);
 	}
 
-	private void Depenetrate(FakeRBData a, FakeRBData b, float penetration)
+	public static void Depenetrate(FakeRBData a, FakeRBData b, float penetration)
 	{
 		var diff = (a.position - b.position).Normalized();
 		//GD.Print("Depenetrate by: " + penetration);

@@ -6,6 +6,6 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Scripts\Engine\" />
+    <Folder Include="Scripts\Debug\" />
   </ItemGroup>
 </Project>

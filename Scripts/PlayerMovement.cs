@@ -1,7 +1,7 @@
 using System.Linq;
 using Godot;
 
-namespace CustomPhysics.Scripts;
+namespace CustomPhysics;
 
 public partial class PlayerMovement : Node2D
 {

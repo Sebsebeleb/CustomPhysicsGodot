@@ -1,4 +1,4 @@
-namespace CustomPhysics.Scripts;
+namespace CustomPhysics;
 
 public static class TimeControl
 {

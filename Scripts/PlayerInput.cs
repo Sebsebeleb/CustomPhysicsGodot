@@ -1,6 +1,9 @@
+using System.Collections.Generic;
+using CustomPhysics.EcsEngine;
+using CustomPhysics.Gameplay.Components;
 using Godot;
 
-namespace CustomPhysics.Scripts;
+namespace CustomPhysics;
 
 public partial class PlayerInput : Node
 {
@@ -15,12 +18,12 @@ public partial class PlayerInput : Node
     
     public override void _Ready()
     {
-        PhysicsEngine.OnConstructPredicitonWorld += OnPrediction;
+        PhysicsEngine.OnConstructPredictionWorld += OnPrediction;
     }
 
     public override void _ExitTree()
     {
-        PhysicsEngine.OnConstructPredicitonWorld -= OnPrediction;
+        PhysicsEngine.OnConstructPredictionWorld -= OnPrediction;
     }
 
     private void OnPrediction()
@@ -28,12 +31,23 @@ public partial class PlayerInput : Node
         if (isPlacingAffector)
         {
             var mbpos = GetViewport().GetMousePosition();
-            PhysicsEngine.SpawnAffector(new AffectorData()
+            PhysicsEngine.Spawn(new FakeRBData()
             {
-                radius = 60.36f,
+                bodyType = BODY_TYPE.Ephemeral,
+                widthOrRadius = 60.36f,
                 position = mbpos,
-                intensity = 0.12f,
-                remainingDuration = 7.115f,
+                components = new List<Component>()
+                {
+                    new PushOrPullAffector()
+                    {
+                        duration = 7.115f,
+                        intensity = 0.12f,
+                    },
+                    new VisualComponent()
+                    {
+                        color = new Color(0.7f, 0.3f, 0.8f, 0.5f),
+                    }
+                }
             });
         }
 

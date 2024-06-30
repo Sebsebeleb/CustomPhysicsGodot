@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-namespace CustomPhysics.Scripts.Visual;
+namespace CustomPhysics.Visual;
 
 public partial class PositionPredictionSystem : Node
 {

@@ -1,8 +1,9 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
+using CustomPhysics.EcsEngine;
 using Godot;
 
-namespace CustomPhysics.Scripts;
+namespace CustomPhysics;
 
 public enum BODY_TYPE
 {
@@ -18,6 +19,10 @@ public enum BODY_TYPE
     /// Not impacted by certain forces like affectors, and their direction/speed is (for now at least) not affected by gravity. They control their own movement 100%
     /// </summary>
     Body,
+    /// <summary>
+    /// Doesn't actually exist in the physics world
+    /// </summary>
+    Ephemeral,
 }
 
 public class FakeRBData
@@ -31,6 +36,7 @@ public class FakeRBData
     [Export] public float widthOrRadius;
     [Export] public float height;
     [Export] public int bounces = 0;
+    public List<Component> components = new List<Component>();
 }
 public partial class FakeRB : Node2D
 {

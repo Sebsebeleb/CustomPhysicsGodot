@@ -1,8 +1,10 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
+using CustomPhysics.EcsEngine;
+using CustomPhysics.Gameplay.Components;
 using Godot;
 
-namespace CustomPhysics.Scripts;
+namespace CustomPhysics;
 
 [Tool]
 public partial class Affector : Node2D
@@ -39,17 +41,29 @@ public partial class Affector : Node2D
     private void Setup()
     {
         GD.Print("Spawn affector at: " + this.GlobalPosition);
-        this.entityReference = PhysicsEngine.SpawnAffector(new AffectorData()
+        this.entityReference = PhysicsEngine.Spawn(new FakeRBData()
         {
-            radius = this.radius,
+            bodyType = BODY_TYPE.Ephemeral,
+            widthOrRadius = this.radius,
             position = this.GlobalPosition,
-            intensity = this.intensity,
-            remainingDuration = this.duration
+            components = new List<Component>()
+            {
+                new PushOrPullAffector()
+                {
+                    duration = this.duration,
+                    intensity = this.intensity
+                },
+                new VisualComponent()
+                {
+                    color = new Color(0.7f, 0.3f, 0.8f, 0.5f),
+                }
+            },
         });
     }
     
     public override void _Process(double delta)
     {
+        /*
         if (Engine.IsEditorHint())
         {
             return;
@@ -61,15 +75,20 @@ public partial class Affector : Node2D
             QueueFree();
         }
         this.QueueRedraw();
+        */
     }
 
+    /*
     private AffectorData GetMe()
     {
-        return PhysicsEngine.GetRealWorld().Affectors.FirstOrDefault(a => a.index == this.entityReference);
+        var result = PhysicsEngine.GetRealWorld().Affectors.TryGetValue(this.entityReference, out var data);
+        return result ? data : null;
     }
+    */
 
     public override void _Draw()
     {
+        /*
         //this.DrawCircle(new Vector2(0,0), this.radius, new Color(0.5f, 0.7f, 1f, 0.6f));
 
         var data = GetMe();
@@ -84,6 +103,7 @@ public partial class Affector : Node2D
         var alpha = 0.5f * fraction;
         this.DrawCircle(new Vector2(0,0), size, new Color(0.54f, 0.2f, 0.6f, alpha));
         base._Draw();
+        */
     }
 
 }

@@ -1,6 +1,6 @@
 using Godot;
 
-namespace CustomPhysics.Scripts;
+namespace CustomPhysics;
 
 public partial class ShootBehaviour : Node2D
 {
