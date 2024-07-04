@@ -9,7 +9,17 @@ public abstract class BaseSystem
 
     public static void GetComponentsFor<T>(int id){ }
 
-    public virtual void Update(World world) { }
+    /// <summary>
+    /// Called during regular node's update
+    /// </summary>
+    /// <param name="world"></param>
+    /// <param name="timestep"></param>
+    public virtual void Update(World world, float timestep) { }
 
-    public virtual void PhysicsProcess(World world) { }
+    /// <summary>
+    /// Called every time the physics engine processes the "physics" (more like whole game step atm)
+    /// </summary>
+    /// <param name="world"></param>
+    /// <param name="timestep"></param>
+    public virtual void PhysicsProcess(World world, float timestep) { }
 }

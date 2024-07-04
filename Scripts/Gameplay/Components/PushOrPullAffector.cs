@@ -2,7 +2,7 @@ using CustomPhysics.EcsEngine;
 
 namespace CustomPhysics.Gameplay.Components;
 
-public class PushOrPullAffector : Component
+public struct PushOrPullAffector : IComponent
 {
     public float intensity;
     public float duration;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CustomPhysics.Gameplay.Components;
 using Godot;
 
@@ -22,7 +23,7 @@ public partial class EcsRenderer : Node2D
             {
                 var vComp = result.comp;
                 var id = result.entityId;
-                var rb = world.FakeRbs[id];
+                var rb = world.FakeRbs.FirstOrDefault(r => r.index == id);
                 
                 DrawCircle(rb.position, rb.widthOrRadius, vComp.color);
             }

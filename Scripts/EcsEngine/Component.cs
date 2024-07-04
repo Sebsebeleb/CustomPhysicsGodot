@@ -1,6 +1,6 @@
 namespace CustomPhysics.EcsEngine;
 
-public abstract class Component
+public interface IComponent
 {
     
 }

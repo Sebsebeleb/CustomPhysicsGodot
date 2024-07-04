@@ -11,7 +11,7 @@ public partial class PhysicsEngine : Node
 {
 
 	public static event Action OnConstructPredictionWorld;
-	public static event Action<World> OnPhysicsProcess;
+	public static event Action<World, float> OnPhysicsProcess;
 	
 	private static PhysicsEngine instance;
 	
@@ -118,8 +118,8 @@ public partial class PhysicsEngine : Node
 	{
 		data.index = worldBeingSimulated.currentIndex++;
 		worldBeingSimulated.FakeRbs.Add(data);
-		worldBeingSimulated.ComponentLookup[data.index] = new List<Component>();
-		worldBeingSimulated.ComponentLookup[data.index].AddRange(data.components);
+		worldBeingSimulated.ComponentLookup[data.index] = new IComponent[data.components.Count];
+		data.components.CopyTo(worldBeingSimulated.ComponentLookup[data.index]);
 
 		return data.index;
 	}
@@ -208,7 +208,7 @@ public partial class PhysicsEngine : Node
 		}
 
 
-		OnPhysicsProcess?.Invoke(worldBeingSimulated);
+		OnPhysicsProcess?.Invoke(worldBeingSimulated, (float)delta);
 
 
 		List<int> entriesToDelete = new List<int>();

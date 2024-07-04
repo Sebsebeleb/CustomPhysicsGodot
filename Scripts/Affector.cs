@@ -46,7 +46,7 @@ public partial class Affector : Node2D
             bodyType = BODY_TYPE.Ephemeral,
             widthOrRadius = this.radius,
             position = this.GlobalPosition,
-            components = new List<Component>()
+            components = new List<IComponent>()
             {
                 new PushOrPullAffector()
                 {
@@ -56,6 +56,10 @@ public partial class Affector : Node2D
                 new VisualComponent()
                 {
                     color = new Color(0.7f, 0.3f, 0.8f, 0.5f),
+                },
+                new LifetimeComponent()
+                {
+                    lifetime = 2f,
                 }
             },
         });

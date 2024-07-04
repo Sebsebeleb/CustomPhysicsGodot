@@ -36,7 +36,7 @@ public partial class PlayerInput : Node
                 bodyType = BODY_TYPE.Ephemeral,
                 widthOrRadius = 60.36f,
                 position = mbpos,
-                components = new List<Component>()
+                components = new List<IComponent>()
                 {
                     new PushOrPullAffector()
                     {
@@ -46,6 +46,10 @@ public partial class PlayerInput : Node
                     new VisualComponent()
                     {
                         color = new Color(0.7f, 0.3f, 0.8f, 0.5f),
+                    },
+                    new LifetimeComponent()
+                    {
+                        lifetime = 3f
                     }
                 }
             });

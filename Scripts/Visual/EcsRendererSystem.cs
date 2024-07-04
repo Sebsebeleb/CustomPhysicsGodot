@@ -15,10 +15,8 @@ public class EcsRendererSystem : BaseSystem
         base.Initialize();
     }
 
-    public override void Update(World world)
+    public override void Update(World world, float timestep)
     {
-        base.Update(world);
-
         EcsRendererNode.SetData(world);
     }
 }

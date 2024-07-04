@@ -27,19 +27,21 @@ public partial class SystemInitializer : Node
         PhysicsEngine.OnPhysicsProcess += PhysicsEngineOnOnPhysicsProcess;
     }
 
-    private void PhysicsEngineOnOnPhysicsProcess(World world)
+    private void PhysicsEngineOnOnPhysicsProcess(World world, float timestep)
     {
         foreach (BaseSystem system in Systems)
         {
-            system.PhysicsProcess(world);
+            system.PhysicsProcess(world, timestep);
         }
+        
+        world.ClearDeadEntities();
     }
 
     public override void _Process(double delta)
     {
         foreach (var system in Systems)
         {
-            system.Update(PhysicsEngine.GetRealWorld());
+            system.Update(PhysicsEngine.GetRealWorld(), (float)delta);
         }
     }
 }

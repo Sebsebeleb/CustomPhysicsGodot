@@ -9,7 +9,7 @@ namespace CustomPhysics.Gameplay.Systems;
 [SystemType]
 public class ConstantPushSystem : BaseSystem
 {
-    public override void Update(World world)
+    public override void Update(World world, float deltaTime)
     {
 	    return;
         foreach (FakeRBData rb in world.FakeRbs)
@@ -26,13 +26,13 @@ public class ConstantPushSystem : BaseSystem
         
     }
 
-    public override void PhysicsProcess(World world)
+    public override void PhysicsProcess(World world, float timestep)
     {
 	    foreach (var query in world.GetComponentsByType<PushOrPullAffector>())
 	    {
 		    var comp = query.comp;
 		    var id = query.entityId;
-		    var affector = world.FakeRbs[id];
+		    var affector = world.FakeRbs.FirstOrDefault(r => r.index == id);
 
 		    var nonEphemeralBodies = world.FakeRbs.Where(r => r.bodyType == BODY_TYPE.Body || r.bodyType == BODY_TYPE.Projectile);
 		    foreach (var rb in nonEphemeralBodies)

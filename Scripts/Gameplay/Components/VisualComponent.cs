@@ -3,7 +3,7 @@ using Godot;
 
 namespace CustomPhysics.Gameplay.Components;
 
-public class VisualComponent : Component
+public class VisualComponent : IComponent
 {
     public Color color;
 }

@@ -29,6 +29,7 @@ public class FakeRBData
 {
     public int index;
     public BODY_TYPE bodyType;
+    public bool dead;
     public Vector2 position;
     [Export] public Vector2 direction;
     [Export] public float speed;
@@ -36,7 +37,7 @@ public class FakeRBData
     [Export] public float widthOrRadius;
     [Export] public float height;
     [Export] public int bounces = 0;
-    public List<Component> components = new List<Component>();
+    public List<IComponent> components = new List<IComponent>();
 }
 public partial class FakeRB : Node2D
 {
