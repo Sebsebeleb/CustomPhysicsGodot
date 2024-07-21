@@ -9,5 +9,5 @@ position = Vector2(337, 234)
 [node name="Behaviour" type="Node2D" parent="."]
 script = ExtResource("1_nk2my")
 radius = 60.36
-intensity = 0.12
+intensity = 8.0
 duration = 7.115

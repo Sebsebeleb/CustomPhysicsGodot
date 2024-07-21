@@ -22,4 +22,13 @@ public abstract class BaseSystem
     /// <param name="world"></param>
     /// <param name="timestep"></param>
     public virtual void PhysicsProcess(World world, float timestep) { }
+    
+    
+    public virtual void PrePhysicsProcess(World world, float timestep) { }
+    
+    /// <summary>
+    /// Called after the real world has been simulated forward in time
+    /// </summary>
+    /// <param name="world"></param>
+    public virtual void OnRealWorldStep(World world) { }
 }

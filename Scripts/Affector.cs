@@ -40,7 +40,6 @@ public partial class Affector : Node2D
 
     private void Setup()
     {
-        GD.Print("Spawn affector at: " + this.GlobalPosition);
         this.entityReference = PhysicsEngine.Spawn(new FakeRBData()
         {
             bodyType = BODY_TYPE.Ephemeral,
@@ -50,17 +49,16 @@ public partial class Affector : Node2D
             {
                 new PushOrPullAffector()
                 {
-                    duration = this.duration,
                     intensity = this.intensity
                 },
                 new VisualComponent()
                 {
-                    color = new Color(0.7f, 0.3f, 0.8f, 0.5f),
+                    color = new Color(0.7f, 0.3f, 0.8f, 0.5f) * 1.3f,
                 },
                 new LifetimeComponent()
                 {
-                    lifetime = 2f,
-                }
+                    lifetime = this.duration,
+                },
             },
         });
     }

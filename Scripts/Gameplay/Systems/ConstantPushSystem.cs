@@ -45,7 +45,7 @@ public class ConstantPushSystem : BaseSystem
 			    if (PhysicsEngine.OverlapCircle(rb.position, affector.position, affector.widthOrRadius))
 			    {
 					var direction = (rb.position - affector.position).Normalized();
-					Vector2 drag = rb.direction + direction * comp.intensity;
+					Vector2 drag = rb.direction + direction * comp.intensity * PhysicsEngine.timeStep;
 					rb.direction = drag.Normalized();
 			    }
 		    }

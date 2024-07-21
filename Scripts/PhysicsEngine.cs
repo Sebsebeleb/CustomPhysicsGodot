@@ -11,20 +11,28 @@ public partial class PhysicsEngine : Node
 {
 
 	public static event Action OnConstructPredictionWorld;
+	
+	/// <summary>
+	/// This is called once every time the REAL world has been properly stepped forward in time.
+	/// </summary>
+	public static event Action<World> OnRealWorldStepped;
 	public static event Action<World, float> OnPhysicsProcess;
+	public static event Action<World, float> PrePhysicsProcess;
 	
 	private static PhysicsEngine instance;
 	
 	private World realWorld;
 
 	private World worldBeingSimulated;
+	private int stepsIntoTheFuture = 0;
+	public static int StepsIntoTheFuture => instance.stepsIntoTheFuture;
 	
-	private const float timeStep = 0.02f;
+	public const float timeStep = 0.015f;
 
 	private double timeStepCounter = 0;
 	private double realTimeStepCounter = 0;
 
-	private const int predictionSteps = 50;
+	private const int predictionSteps = 300;
 
 	private bool dirty;
 
@@ -69,6 +77,11 @@ public partial class PhysicsEngine : Node
 			ProcessPhysics(timeStep);
 		}
 
+		if (simulated)
+		{
+			OnRealWorldStepped?.Invoke(realWorld);
+		}
+
 		if (realTimeStepCounter > timeStep || simulated)
 		{
 			realTimeStepCounter = 0;
@@ -95,10 +108,13 @@ public partial class PhysicsEngine : Node
 		
 		for (int i = 0; i < predictionSteps; i++)
 		{
+			stepsIntoTheFuture = i;
 			ProcessPhysics(timeStep);
 			worldBeingSimulated = worldBeingSimulated.Copy();
 			PredictionWorlds[i] = worldBeingSimulated;
 		}
+
+		stepsIntoTheFuture = 0;
 		// Done prediction, reset back to real world
 		worldBeingSimulated = realWorld;
 	}
@@ -125,7 +141,11 @@ public partial class PhysicsEngine : Node
 	}
 	
 	private void ProcessPhysics(double delta){
-		float minX = 0, minY = 0, maxX = 500, maxY = 500;
+		float minX = 0, minY = 0, maxX = 1400, maxY = 850;
+
+
+		PrePhysicsProcess?.Invoke(worldBeingSimulated, (float)delta);
+		
 		var allRBs = worldBeingSimulated.FakeRbs;
 		foreach (var rb in allRBs)
 		{
@@ -133,19 +153,28 @@ public partial class PhysicsEngine : Node
 
 			if (rb.position.X - rb.widthOrRadius < minX)
 			{
+				rb.bounces--;
 				rb.direction.X = Mathf.Abs(rb.direction.X);
 			}
 			if (rb.position.X + rb.widthOrRadius > maxX)
 			{
+				rb.bounces--;
 				rb.direction.X = -Mathf.Abs(rb.direction.X);
 			}
 			if (rb.position.Y - rb.widthOrRadius < minY)
 			{
+				rb.bounces--;
 				rb.direction.Y = Mathf.Abs(rb.direction.Y);
 			}
 			if (rb.position.Y + rb.widthOrRadius > maxY)
 			{
+				rb.bounces--;
 				rb.direction.Y = -Mathf.Abs(rb.direction.Y);
+			}
+
+			if (rb.bodyType == BODY_TYPE.Projectile && rb.bounces <= 0)
+			{
+				worldBeingSimulated.MarkForDeletion(rb.index);
 			}
 		}
 
@@ -175,11 +204,13 @@ public partial class PhysicsEngine : Node
 					{
 						if (a.bodyType == BODY_TYPE.Projectile)
 						{
+							worldBeingSimulated.MarkForDeletion(a.index);
 							//GD.Print("Remove body a: " + a);
 							//allRBs.Remove(a);
 						}
 						else if (b.bodyType == BODY_TYPE.Projectile)
 						{
+							worldBeingSimulated.MarkForDeletion(b.index);
 							//GD.Print("Remove body b: " + b);
 							//allRBs.Remove(b);
 						}
@@ -209,9 +240,6 @@ public partial class PhysicsEngine : Node
 
 
 		OnPhysicsProcess?.Invoke(worldBeingSimulated, (float)delta);
-
-
-		List<int> entriesToDelete = new List<int>();
 	}
 
 	public static bool OverlapCircle(Vector2 a, Vector2 center, float radius)

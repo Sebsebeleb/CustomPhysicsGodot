@@ -11,11 +11,9 @@ public class EcsRendererSystem : BaseSystem
     public static Node2D _renderingNode;
     public override void Initialize()
     {
-        Engine.GetMainLoop();
-        base.Initialize();
     }
 
-    public override void Update(World world, float timestep)
+    public override void OnRealWorldStep(World world)
     {
         EcsRendererNode.SetData(world);
     }

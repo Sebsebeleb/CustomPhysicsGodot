@@ -40,7 +40,6 @@ public class TickDownLifetimeSystem : BaseSystem
             var innerIndex = query.indexInner;
             var life = query.comp;
             life.lifetime -= timestep;
-            //query.comp.lifetime = 2;
             if (life.lifetime <= 0)
             {
                 toDelete.Add(query.entityId);

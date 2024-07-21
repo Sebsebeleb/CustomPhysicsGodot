@@ -19,8 +19,19 @@ unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 2
 offset_right = 263.0
-offset_bottom = 223.0
+offset_bottom = 31.0
 focus_mode = 0
 text = "Body prediction"
 
+[node name="AlternateColor" type="CheckBox" parent="Panel"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+offset_top = 24.0
+offset_right = 263.0
+offset_bottom = 55.0
+focus_mode = 0
+text = "Alternate BodyP Colors"
+
 [connection signal="toggled" from="Panel/BodyPrediction" to="." method="_on_body_prediction_toggled"]
+[connection signal="toggled" from="Panel/AlternateColor" to="." method="_on_body_alternate_color_toggled"]

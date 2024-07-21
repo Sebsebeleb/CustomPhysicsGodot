@@ -8,4 +8,9 @@ public partial class DebugPanel : Node
     {
         DebugSettings.ShowBodyPredictions = newValue;
     }
+    
+    public void _on_body_alternate_color_toggled(bool newValue)
+    {
+        DebugSettings.AlternateBodyPredictionColors = newValue;
+    }
 }

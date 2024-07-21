@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://l7yfydnh2ehx"]
+
+[ext_resource type="Script" path="res://Scripts/Utility/EcsRendererResources.cs" id="1_gn4iy"]
+[ext_resource type="Texture2D" uid="uid://77juc3p6ugof" path="res://icon.svg" id="2_13mjy"]
+
+[resource]
+script = ExtResource("1_gn4iy")
+sprites = Array[Texture2D]([ExtResource("2_13mjy")])

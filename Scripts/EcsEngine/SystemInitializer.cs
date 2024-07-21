@@ -25,6 +25,24 @@ public partial class SystemInitializer : Node
         }
         
         PhysicsEngine.OnPhysicsProcess += PhysicsEngineOnOnPhysicsProcess;
+        PhysicsEngine.PrePhysicsProcess += PhysicsEngineOnPrePhysicsProcess;
+        PhysicsEngine.OnRealWorldStepped += PhysicsEngineOnOnRealWorldStepped;
+    }
+
+    private void PhysicsEngineOnOnRealWorldStepped(World world)
+    {
+        foreach (BaseSystem system in Systems)
+        {
+            system.OnRealWorldStep(world);
+        }
+    }
+
+    private void PhysicsEngineOnPrePhysicsProcess(World world, float timestep)
+    {
+        foreach (BaseSystem system in Systems)
+        {
+            system.PrePhysicsProcess(world, timestep);
+        }
     }
 
     private void PhysicsEngineOnOnPhysicsProcess(World world, float timestep)

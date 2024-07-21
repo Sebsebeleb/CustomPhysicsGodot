@@ -1,8 +1,13 @@
-[gd_scene format=3 uid="uid://bvxdg81syuvvb"]
+[gd_scene load_steps=2 format=3 uid="uid://bvxdg81syuvvb"]
+
+[sub_resource type="Gradient" id="Gradient_f7w1u"]
+offsets = PackedFloat32Array(0, 0.11747, 0.225904, 0.948795, 1)
+colors = PackedColorArray(0.672, 1.231, 1.4, 0.465, 0.672, 1.231, 1.4, 0.308, 0.672, 1.231, 1.4, 0.162, 0.672, 1.231, 1.4, 0.108, 0.672, 1.231, 1.4, 0)
 
 [node name="Line2D" type="Line2D"]
-width = 2.0
-default_color = Color(0.464, 0.8, 0.7048, 0.631373)
+width = 3.0
+default_color = Color(0.672, 1.231, 1.4, 0.33)
+gradient = SubResource("Gradient_f7w1u")
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2

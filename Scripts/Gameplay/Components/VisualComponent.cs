@@ -3,7 +3,19 @@ using Godot;
 
 namespace CustomPhysics.Gameplay.Components;
 
-public class VisualComponent : IComponent
+public struct VisualComponent : IComponent
 {
-    public Color color;
+    public enum VisualType
+    {
+        Shape,
+        Sprite
+    }
+    public Color color = Colors.White;
+    public VisualType type = VisualType.Shape;
+    public int spriteID = -1;
+    public Vector2 size = default;
+
+    public VisualComponent()
+    {
+    }
 }

@@ -20,6 +20,11 @@ config/icon="res://icon.svg"
 SystemInitializer="res://Scripts/EcsEngine/SystemInitializer.cs"
 EcsRendererNode="*res://Scripts/Utility/EcsRendererNode.cs"
 
+[display]
+
+window/size/viewport_width=1500
+window/size/viewport_height=900
+
 [dotnet]
 
 project/assembly_name="CustomPhysics"
@@ -27,7 +32,10 @@ project/assembly_name="CustomPhysics"
 [file_customization]
 
 folder_colors={
-"res://Scripts/": "orange"
+"res://Data/": "teal",
+"res://Scripts/": "orange",
+"res://Scripts/Authoring/": "yellow",
+"res://Sprites/": "blue"
 }
 
 [global_group]
@@ -71,3 +79,7 @@ down={
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194322,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[rendering]
+
+viewport/hdr_2d=true

@@ -15,6 +15,8 @@ public partial class PlayerInput : Node
 
     private bool isPlacingAffector = false;
     private bool isShootPredicting = false;
+
+    private bool pressedShootSinceLastUpdate = false;
     
     public override void _Ready()
     {
@@ -40,8 +42,7 @@ public partial class PlayerInput : Node
                 {
                     new PushOrPullAffector()
                     {
-                        duration = 7.115f,
-                        intensity = 0.12f,
+                        intensity = 8,
                     },
                     new VisualComponent()
                     {
@@ -49,28 +50,44 @@ public partial class PlayerInput : Node
                     },
                     new LifetimeComponent()
                     {
-                        lifetime = 3f
+                        lifetime = 7.115f,
                     }
                 }
             });
         }
 
-        if (isShootPredicting)
+        if (isShootPredicting || true)
         {
-            var mbpos = GetViewport().GetMousePosition();
-            var playerPos = this.player.GlobalPosition;
-            var direction = mbpos - playerPos;
-
-            PhysicsEngine.Spawn(new FakeRBData()
-            {
-                position = playerPos,
-                speed = 800,
-                shapeType = 0,
-                widthOrRadius = 6,
-                height = 0,
-                bounces = -1,
-            });
+            Shoot();
         }
+    }
+
+    private void Shoot()
+    {
+        var mbpos = GetViewport().GetMousePosition();
+        var playerPos = this.player.GlobalPosition;
+        var direction = (mbpos - playerPos).Normalized();
+
+        PhysicsEngine.Spawn(new FakeRBData()
+        {
+            position = playerPos + direction * 50,
+            direction = direction,
+            speed = 800,
+            bodyType = BODY_TYPE.Projectile,
+            shapeType = 0,
+            widthOrRadius = 6,
+            height = 0,
+            bounces = 3,
+            components = new ()
+            {
+                new VisualComponent()
+                {
+                    size = new Vector2(6,6),
+                    color = Colors.OrangeRed * 1.5f,
+                    type = VisualComponent.VisualType.Shape
+                }
+            }
+       }); 
     }
 
     public override void _Input(InputEvent @event)
@@ -99,6 +116,7 @@ public partial class PlayerInput : Node
             if (mk.IsReleased())
             {
                 isShootPredicting = false;
+                pressedShootSinceLastUpdate = true;
             }
         }
         if (@event is InputEventMouseButton mb )
@@ -154,6 +172,11 @@ public partial class PlayerInput : Node
 
     public override void _Process(double delta)
     {
+        if (pressedShootSinceLastUpdate)
+        {
+            pressedShootSinceLastUpdate = false;
+            Shoot();
+        }
         if (changingTime)
         {
             var current = TimeControl.TimeScale;

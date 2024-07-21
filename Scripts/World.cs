@@ -43,6 +43,122 @@ public record World
         return results;
     }
 
+    public List<(T compA, T1 compB, int entityId, int indexInnerA, int indexInnerB)> GetComponentsByType<T, T1>() 
+        where T : IComponent
+        where T1 : IComponent
+    {
+        
+        List<(T comp, T1 compB, int entityId, int indexInnerA, int indexInnerB)> results = new ();
+
+        foreach (var pair in ComponentLookup)
+        {
+            var entityId = pair.Key;
+            var components = ComponentLookup[entityId];
+
+            int numFound = 0;
+            T compA = default;
+            T1 compB = default;
+            int indexInnerA = default;
+            int indexInnerB = default;
+            for (int indexInner = 0; indexInner < components.Length; indexInner++)
+            {
+                var comp = components[indexInner];
+                if (comp is T c)
+                {
+                    compA = c;
+                    numFound += 1;
+                    indexInnerA = indexInner;
+                }
+                else if (comp is T1 c2)
+                {
+                    compB = c2;
+                    numFound += 1;
+                    indexInnerB = indexInner;
+                }
+
+                // Early break because we found both
+                if (numFound == 2)
+                {
+                    break;
+                }
+            }
+
+            if (numFound == 2)
+            {
+                results.Add((compA, compB, entityId, indexInnerA, indexInnerB));
+            }
+            
+        }
+
+        return results;
+    }
+    
+    public List<(T compA, T1 compB, T2 compC, int entityId, int indexInnerA, int indexInnerB, int indexInnerC)> GetComponentsByType<T, T1, T2>() 
+        where T : IComponent
+        where T1 : IComponent
+        where T2 : IComponent
+    {
+        
+        List<(T comp, T1 compB, T2 compC, int entityId, int indexInnerA, int indexInnerB, int indexInnerC)> results = new ();
+
+        foreach (var pair in ComponentLookup)
+        {
+            var entityId = pair.Key;
+            var components = ComponentLookup[entityId];
+
+            int numFound = 0;
+            T compA = default;
+            T1 compB = default;
+            T2 compC = default;
+            int indexInnerA = default;
+            int indexInnerB = default;
+            int indexInnerC = default;
+            for (int indexInner = 0; indexInner < components.Length; indexInner++)
+            {
+                var comp = components[indexInner];
+                if (comp is T c)
+                {
+                    compA = c;
+                    numFound += 1;
+                    indexInnerA = indexInner;
+                }
+                else if (comp is T1 c2)
+                {
+                    compB = c2;
+                    numFound += 1;
+                    indexInnerB = indexInner;
+                }
+                else if (comp is T2 c3)
+                {
+                    compC = c3;
+                    numFound++;
+                    indexInnerC = indexInner;
+                }
+
+                // Early break because we found both
+                if (numFound == 3)
+                {
+                    break;
+                }
+            }
+
+            if (numFound == 3)
+            {
+                results.Add((compA, compB, compC, entityId, indexInnerA, indexInnerB, indexInnerC));
+            }
+            
+        }
+
+        return results;
+    }
+
+    
+    public FakeRBData GetRBById(int id)
+    {
+        // FIXME: This is obviously super slow.
+        return this.FakeRbs.FirstOrDefault(r => r.index == id);
+    }
+
     
     public World Copy()
     {
@@ -103,7 +219,6 @@ public record World
 
     public void DeleteEntity(int id)
     {
-        GD.Print($"Delete ID {id}");
         var componentsHasId = ComponentLookup.ContainsKey(id);
         var entity = this.FakeRbs.FirstOrDefault(rb => rb.index == id);
 
