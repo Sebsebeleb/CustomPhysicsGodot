@@ -129,7 +129,9 @@ public partial class PlayerInput : Node
                 GetTree().Root.AddChild(well);
                 changedWorld = true;
             }
-            if (@event.IsPressed() && (mb.ButtonIndex == MouseButton.WheelUp || mb.ButtonIndex == MouseButton.WheelDown))
+
+            bool ctrlPressed = Input.IsKeyPressed(Key.Ctrl);
+            if (!ctrlPressed && @event.IsPressed() && (mb.ButtonIndex == MouseButton.WheelUp || mb.ButtonIndex == MouseButton.WheelDown))
             {
                 float delta = 0;
                 if (mb.ButtonIndex == MouseButton.WheelUp)
