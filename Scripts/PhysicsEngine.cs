@@ -26,13 +26,17 @@ public partial class PhysicsEngine : Node
 	private World worldBeingSimulated;
 	private int stepsIntoTheFuture = 0;
 	public static int StepsIntoTheFuture => instance.stepsIntoTheFuture;
-	
-	public const float timeStep = 0.015f;
+
+	/// <summary>
+	/// The number of seconds we can see into the future. Affects the timeStep used for physics calculation in combination with <see cref="predictionSteps"/>
+	/// </summary>
+	private float secondsPredicted = 4.5f;
+	public static float timeStep => instance.secondsPredicted/instance.predictionSteps;
 
 	private double timeStepCounter = 0;
 	private double realTimeStepCounter = 0;
 
-	private const int predictionSteps = 300;
+	private int predictionSteps = 300;
 
 	private bool dirty;
 
@@ -94,6 +98,16 @@ public partial class PhysicsEngine : Node
 		}
 	}
 
+
+	public static void SetPredictionSteps(int nextNumSteps)
+	{
+		instance.predictionSteps = nextNumSteps;
+	}
+	
+	public static void SetPredictionTime(float timePredicted)
+	{
+		instance.secondsPredicted = timePredicted;
+	}
 
 	public static void PredictFuturePlease()
 	{

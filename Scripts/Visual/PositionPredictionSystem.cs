@@ -33,9 +33,11 @@ public partial class PositionPredictionSystem : Node
                 data[rb.index].Add(rb.position);
             }
         }
-        
+
+        HashSet<int> touchedIndices = new HashSet<int>();
         foreach (KeyValuePair<int,List<Vector2>> pair in data)
         {
+            touchedIndices.Add(pair.Key);
             if (!inUse.ContainsKey(pair.Key))
             {
                 if (!pool.Any())
@@ -51,6 +53,16 @@ public partial class PositionPredictionSystem : Node
             foreach (Vector2 vector2 in pair.Value)
             {
                 inUse[pair.Key].AddPoint(vector2);
+            }
+        }
+
+        // Clear unused lines
+        foreach (int k in inUse.Keys.ToArray())
+        {
+            if (!touchedIndices.Contains(k))
+            {
+                inUse[k].ClearPoints();
+                inUse.Remove(k);
             }
         }
     }

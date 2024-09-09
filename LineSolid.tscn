@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnasd1wmb57s1"]
+
+[ext_resource type="PackedScene" uid="uid://bvxdg81syuvvb" path="res://line.tscn" id="1_ldujv"]
+
+[node name="Line2D" instance=ExtResource("1_ldujv")]
+z_index = -60
+material = null
+width = 1.933
+texture = null
+texture_mode = 2
+joint_mode = 0

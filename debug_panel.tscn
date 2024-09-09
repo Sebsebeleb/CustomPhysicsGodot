@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://djgt4db4i0hdh"]
+[gd_scene load_steps=3 format=3 uid="uid://djgt4db4i0hdh"]
 
 [ext_resource type="Script" path="res://Scripts/DebugPanel.cs" id="1_w08bh"]
+[ext_resource type="Script" path="res://Scripts/GenericNodes/BetterSpinBox.cs" id="2_2lxly"]
 
 [node name="DebugPanel" type="PanelContainer"]
 auto_translate_mode = 1
@@ -14,24 +15,46 @@ script = ExtResource("1_w08bh")
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 2
 
-[node name="BodyPrediction" type="CheckBox" parent="Panel"]
+[node name="VFlowContainer" type="VFlowContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BodyPrediction" type="CheckBox" parent="Panel/VFlowContainer"]
 unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 2
-offset_right = 263.0
-offset_bottom = 31.0
 focus_mode = 0
 text = "Body prediction"
 
-[node name="AlternateColor" type="CheckBox" parent="Panel"]
+[node name="AlternateColor" type="CheckBox" parent="Panel/VFlowContainer"]
 unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 2
-offset_top = 24.0
-offset_right = 263.0
-offset_bottom = 55.0
 focus_mode = 0
 text = "Alternate BodyP Colors"
 
-[connection signal="toggled" from="Panel/BodyPrediction" to="." method="_on_body_prediction_toggled"]
-[connection signal="toggled" from="Panel/AlternateColor" to="." method="_on_body_alternate_color_toggled"]
+[node name="Prediction Steps" type="SpinBox" parent="Panel/VFlowContainer"]
+layout_mode = 2
+max_value = 400.0
+value = 300.0
+rounded = true
+prefix = "Prediction steps  "
+script = ExtResource("2_2lxly")
+
+[node name="Prediction Time" type="SpinBox" parent="Panel/VFlowContainer"]
+layout_mode = 2
+max_value = 5.0
+step = 0.01
+value = 4.5
+allow_greater = true
+prefix = "Prediction Time"
+script = ExtResource("2_2lxly")
+
+[connection signal="toggled" from="Panel/VFlowContainer/BodyPrediction" to="." method="_on_body_prediction_toggled"]
+[connection signal="toggled" from="Panel/VFlowContainer/AlternateColor" to="." method="_on_body_alternate_color_toggled"]
+[connection signal="value_changed" from="Panel/VFlowContainer/Prediction Steps" to="." method="_on_prediction_steps_value_changed"]
+[connection signal="value_changed" from="Panel/VFlowContainer/Prediction Time" to="." method="_on_prediction_time_value_changed"]

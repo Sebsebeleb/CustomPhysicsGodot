@@ -43,8 +43,8 @@ public partial class AiAuth : Node2D
                 new CharacterStateComponent(),
                 new WeaponComponent()
                 {
-                    StatAttackRate = 1,
-                    numBulletsPerShot = 3,
+                    StatAttackRate = 4f,
+                    numBulletsPerShot = 2,
                     minSpreadBetweenShots = Mathf.DegToRad(5f),
                 }
             }

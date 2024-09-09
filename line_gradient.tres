@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b6n234pv8m15x"]
+
+[ext_resource type="Shader" path="res://linegradient.gdshader" id="1_xfsxr"]
+
+[resource]
+shader = ExtResource("1_xfsxr")
+shader_parameter/scroll_speed = 6.0
+shader_parameter/line_color = Color(0.91, 0.41496, 0.2912, 1)
+shader_parameter/line_size = 0.495
+shader_parameter/rotation = 235.606
