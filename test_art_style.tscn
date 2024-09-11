@@ -1,33 +1,80 @@
-[gd_scene load_steps=13 format=3 uid="uid://bgxuoe8qakvbh"]
+[gd_scene load_steps=16 format=3 uid="uid://bgxuoe8qakvbh"]
 
 [ext_resource type="PackedScene" uid="uid://b6tik74qbhqqn" path="res://Prefabs/minimalist_enemy.tscn" id="1_16xxm"]
 [ext_resource type="Shader" path="res://shadow.gdshader" id="1_t6avo"]
 [ext_resource type="Texture2D" uid="uid://bqjx73p7aaan5" path="res://Sprites/Minimalist/Wall.png" id="2_oe4qk"]
 [ext_resource type="Texture2D" uid="uid://hwvcw2r7gt3c" path="res://Sprites/Utility/splash.png" id="3_jykyb"]
+[ext_resource type="Script" path="res://RemoteViewport.gd" id="4_dsj18"]
 [ext_resource type="Script" path="res://Scripts/Editing/FollowMouse.gd" id="4_l15uu"]
 [ext_resource type="Material" uid="uid://b6n234pv8m15x" path="res://line_gradient.tres" id="4_qd7lk"]
-[ext_resource type="Texture2D" uid="uid://77juc3p6ugof" path="res://icon.svg" id="5_xlsdd"]
 [ext_resource type="Texture2D" uid="uid://bbpnhkhcvfedm" path="res://Sprites/Minimalist/CircleFill.png" id="8_gfmah"]
+[ext_resource type="Script" path="res://viewportlight.gd" id="9_hukq0"]
 [ext_resource type="Texture2D" uid="uid://bbd5cm0eiwugr" path="res://Sprites/Utility/FilledRect.png" id="9_j3bsg"]
 
 [sub_resource type="Environment" id="Environment_jrv1v"]
 background_mode = 3
 tonemap_mode = 3
 glow_enabled = true
-glow_intensity = 1.64
-glow_strength = 1.27
-glow_bloom = 1.0
+glow_intensity = 2.43
+glow_strength = 0.74
+glow_bloom = 0.62
+glow_blend_mode = 0
 glow_hdr_threshold = 0.1
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_peqsl"]
+polygon = PackedVector2Array(-704, -139, -704, -136.8, -712, -128.8, -712, 128.9, -703, 136.8, -703, 139, 700.6, 139, 707.6, 134, 709.7, 134, 710.7, 127, 712, 127, 712, -125.4, 710, -130.5, 710, -133.2, 703, -137.2, 703, -139)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ffgmu"]
 polygon = PackedVector2Array(709, -147, -710, -147, -719.8, -137, -720, 137.7, -710, 146.9, 709.7, 147, 719.9, 136, 720, -136.8)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_66pq5"]
+viewport_path = NodePath("SubViewportContainer2/LightFog")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v6myu"]
 shader = ExtResource("1_t6avo")
 
 [node name="Node2D" type="Control"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="."]
+z_index = -1140
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="LightFog" type="SubViewport" parent="SubViewportContainer2"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1500, 900)
+render_target_clear_mode = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer2/LightFog"]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("3_jykyb")
+script = ExtResource("4_l15uu")
+
+[node name="Sprite2D2" type="Sprite2D" parent="SubViewportContainer2/LightFog"]
+position = Vector2(33.49, 13.6)
+texture = ExtResource("2_oe4qk")
+
+[node name="Control2" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Node2D" type="Node2D" parent="."]
 visible = false
@@ -35,6 +82,7 @@ visible = false
 [node name="PointLight2D" type="PointLight2D" parent="Node2D"]
 position = Vector2(492, 457)
 scale = Vector2(2.24387, 2.24387)
+energy = 1.1
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.784314)
 texture = ExtResource("3_jykyb")
@@ -47,7 +95,9 @@ texture = ExtResource("9_j3bsg")
 
 [node name="Sprite2D2" type="Sprite2D" parent="Node2D"]
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" type="Node2D" parent="." node_paths=PackedStringArray("viewport")]
+script = ExtResource("4_dsj18")
+viewport = NodePath("../SubViewportContainer/SubViewport")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
 environment = SubResource("Environment_jrv1v")
@@ -62,7 +112,6 @@ position = Vector2(522, 400)
 position = Vector2(794, 394)
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="World"]
-visible = false
 position = Vector2(-31, 125)
 
 [node name="Wall" type="Sprite2D" parent="World/StaticBody2D2"]
@@ -78,7 +127,7 @@ polygon = PackedVector2Array(709, -147, -710, -147, -719.8, -137, -720, 137.7, -
 [node name="LightOccluder2D" type="LightOccluder2D" parent="World/StaticBody2D2"]
 position = Vector2(673, 185)
 scale = Vector2(0.272109, 0.272109)
-occluder = SubResource("OccluderPolygon2D_ffgmu")
+occluder = SubResource("OccluderPolygon2D_peqsl")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="World"]
 
@@ -99,17 +148,18 @@ occluder = SubResource("OccluderPolygon2D_ffgmu")
 
 [node name="PointLight2D" type="PointLight2D" parent="World"]
 position = Vector2(492, 457)
-scale = Vector2(2.24387, 2.24387)
+scale = Vector2(1.2, 1.2)
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.784314)
 texture = ExtResource("3_jykyb")
 script = ExtResource("4_l15uu")
 
 [node name="Sprite2D" type="Sprite2D" parent="World"]
+modulate = Color(0.0921639, 0.133564, 0.149502, 1)
 z_index = -145
 position = Vector2(757, 435)
 scale = Vector2(11.7383, 7.00391)
-texture = ExtResource("5_xlsdd")
+texture = ExtResource("9_j3bsg")
 
 [node name="Sprite2D2" type="Sprite2D" parent="World"]
 light_mask = 0
@@ -118,37 +168,22 @@ position = Vector2(1195, 517)
 texture = ExtResource("8_gfmah")
 
 [node name="GlobalShadow" type="PointLight2D" parent="World"]
-position = Vector2(2421, 1151)
+position = Vector2(2293, 1191)
 scale = Vector2(9.72852, 5.47461)
 blend_mode = 1
 texture = ExtResource("9_j3bsg")
 
-[node name="GlobalVisible" type="PointLight2D" parent="World"]
-light_mask = 0
-visibility_layer = 2
-position = Vector2(2194, 1399)
+[node name="LightControler" type="Node2D" parent="World" node_paths=PackedStringArray("subViewport", "light")]
+script = ExtResource("9_hukq0")
+subViewport = NodePath("../../SubViewportContainer2/LightFog")
+light = NodePath("GlobalVisible")
+
+[node name="GlobalVisible" type="PointLight2D" parent="World/LightControler"]
+visibility_layer = 3
+position = Vector2(1642, 647)
 scale = Vector2(8.67969, 5.65625)
-range_item_cull_mask = 0
-texture = ExtResource("9_j3bsg")
-
-[node name="SubViewportContainer2" type="SubViewportContainer" parent="."]
-visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="SubViewport2" type="SubViewport" parent="SubViewportContainer2"]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-render_target_clear_mode = 1
-render_target_update_mode = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer2/SubViewport2"]
-modulate = Color(1, 1, 1, 0.0784314)
-scale = Vector2(2.244, 2.244)
-texture = ExtResource("3_jykyb")
-script = ExtResource("4_l15uu")
+energy = 0.4
+texture = SubResource("ViewportTexture_66pq5")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 visible = false
